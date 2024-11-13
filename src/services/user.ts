@@ -6,6 +6,14 @@ import User from "../models/user";
 import Organization from "../models/organization"
 
 export const loginService = async (loginDTO: loginDTO) => {
+    const user = await User.findOne({userName:loginDTO.userName}).lean()
+    if(!user)throw new Error('user not found')
+    if (!await bcrypt.compare(loginDTO.password, user.password))throw new Error('password invalid')
+    const token = JWT.sign({
+        user_id:user._id,
+        userName:user.userName
+    }, process.env.SECRET_JWT as string, {expiresIn:'10m'} )
+    return {...user, token, password:'******'}
 };
 
 export const registerService = async (registerDTO:registerDTO) => {
