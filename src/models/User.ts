@@ -4,7 +4,6 @@ export interface IUser extends Document {
     userName: string;
     password: string;
     organization: string;
-    location?: string;
     resources: {
         name: string;
         amount: number;
@@ -16,7 +15,6 @@ const UserSchema = new Schema<IUser>({
     userName: {type:String, required: true},
     password: {type:String, required: true},
     organization: {type:String, required: true},
-    location: String,
     resources: [
         {
             name: String,
