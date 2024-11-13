@@ -23,7 +23,8 @@ export const registerService = async (registerDTO:registerDTO) => {
         ...registerDTO,
         password: await bcrypt.hash(registerDTO.password, Number(process.env.HASH)| 10),
         resources: organization.resources,
-        budget:organization.budget
+        budget:organization.budget,
+        attacker:!organization.name.startsWith('IDF')
     })
     newUser.save()
     return newUser
