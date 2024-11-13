@@ -2,7 +2,7 @@ import JWT from "jsonwebtoken";
 import { loginDTO } from "../DTO/loginDTO";
 import { registerDTO } from "../DTO/registerDTO";
 import bcrypt from 'bcrypt'
-import User from "../models/user";
+import User from "../models/User"
 import Organization from "../models/organization"
 
 export const loginService = async (loginDTO: loginDTO) => {
@@ -17,7 +17,7 @@ export const loginService = async (loginDTO: loginDTO) => {
 };
 
 export const registerService = async (registerDTO:registerDTO) => {
-    const organization = await Organization.findOne({name:registerDTO.organization, location:registerDTO.location}).lean()
+    const organization = await Organization.findOne({name:registerDTO.organization}).lean()
     if(!organization)throw new Error('organization not found')
     const newUser = new User({
         ...registerDTO,
