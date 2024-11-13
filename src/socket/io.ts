@@ -4,6 +4,7 @@ import { IAttack } from "../models/Attack";
 import JWT from 'jsonwebtoken'
 import { IUser } from "../models/User";
 import { tokenPayload } from "../DTO/tokenPayload";
+import { createAttack } from "../services/attack";
 
 export const handleSocketConnection = (client:Socket)=>{
     console.log(client.id)
@@ -11,7 +12,9 @@ export const handleSocketConnection = (client:Socket)=>{
         try {
             const user:tokenPayload = verifyAttack(data.token)
             if (user.user_id != data.attack.id_attacker) {throw new Error('you are Hacker 😱')}
-            
+            const createdAttack = createAttack(data.attack)
+            if (!createdAttack) {throw new Error('attack not created')}
+            io.emit('launched', createdAttack)
         } catch (error) {
             console.log((error as Error).message)
         }
