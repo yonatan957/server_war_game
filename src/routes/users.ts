@@ -8,7 +8,7 @@ export const login = async (req: Request<any, any, loginDTO>,res: Response) => {
     const result = await loginService(req.body);
     res.status(200).json(result);
   } catch (error) {
-    res.send((error as Error).message);
+    res.status(400).json({message:(error as Error).message});
   }
 };
 
@@ -17,6 +17,6 @@ export const register = async (req: Request<any, any, registerDTO>,res: Response
     const result = await registerService(req.body);
     res.status(201).json({ message: "success" });
   } catch (error) {
-    res.json((error as Error).message);
+    res.status(400).json({message:(error as Error).message});
   }
 };
