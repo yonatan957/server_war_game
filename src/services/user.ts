@@ -4,15 +4,17 @@ import { registerDTO } from "../DTO/registerDTO";
 import bcrypt from 'bcrypt'
 import User from "../models/User"
 import Organization from "../models/organization"
+import { tokenPayload } from "../DTO/tokenPayload";
 
 export const loginService = async (loginDTO: loginDTO) => {
     const user = await User.findOne({userName:loginDTO.userName}).lean()
     if(!user)throw new Error('user not found')
     if (!await bcrypt.compare(loginDTO.password, user.password))throw new Error('password invalid')
-    const token = JWT.sign({
-        user_id:user._id,
+    const payload:tokenPayload = {
+        user_id:user._id as string,
         userName:user.userName
-    }, process.env.SECRET_JWT as string, {expiresIn:'10m'} )
+    }
+    const token = JWT.sign(payload, process.env.SECRET_JWT as string, {expiresIn:'10m'} )
     return {...user, token, password:'******'}
 };
 
