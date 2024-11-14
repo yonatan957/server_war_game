@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import User from "../models/User"
 import Organization from "../models/organization"
 import { tokenPayload } from "../DTO/tokenPayload";
+import missles from '../Data/missiles.json'
 
 export const loginService = async (loginDTO: loginDTO) => {
     const user = await User.findOne({userName:loginDTO.userName}).lean()
@@ -31,3 +32,17 @@ export const registerService = async (registerDTO:registerDTO) => {
     newUser.save()
     return newUser
 };
+
+export const byeWeaponService = async (id:string, interceptor:string) => {
+    const user = await User.findById(id).lean()
+    if(!user) throw new Error('user not found')
+    const weapon = user.resources.find(resource => resource.name === interceptor)
+    if(!weapon) throw new Error('weapon not found')
+    const missle = missles.find(missle => missle.name === interceptor)
+    if(!missle) throw new Error('missle not found')
+    if(user.budget < missle.price) throw new Error('not enough money')
+    user.budget -= missle.price
+    weapon.amount += 1
+    await user.save()
+    return user
+}
