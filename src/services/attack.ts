@@ -48,3 +48,9 @@ export const explodeAttack = async (attack:string, user_id:string) => {
     await attackToUpdate.save()
     return attackToUpdate
 }
+
+export const getAllService = async () => {
+    const attacks = await Attack.find({}).lean()
+    if(!attacks) throw new Error('attacks not found')
+    return attacks
+}
