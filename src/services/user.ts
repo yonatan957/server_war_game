@@ -14,7 +14,7 @@ export const loginService = async (loginDTO: loginDTO) => {
         user_id:user._id as string,
         userName:user.userName
     }
-    const token = JWT.sign(payload, process.env.SECRET_JWT as string, {expiresIn:'10m'} )
+    const token = JWT.sign(payload, process.env.SECRET_JWT as string, {expiresIn:'1d'} )
     return {...user, token, password:'******'}
 };
 

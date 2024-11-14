@@ -7,6 +7,7 @@ import cors from 'cors'
 import http from 'http'
 import { Server } from 'socket.io'
 import { handleSocketConnection } from './socket/io'
+import attackController from './controllers/attacks'
 
 const PORT = process.env.PORT
 const app = express()
@@ -27,6 +28,7 @@ app.use(cors())
 
 app.use('/sid', sidController)
 app.use('/users', usersController)
+app.use('/attacks', attackController)
 
 httpServer.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`)

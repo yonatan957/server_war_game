@@ -4,8 +4,8 @@ import verifyUser from "../middlewares/verifyUser";
 
 const router = Router();
 
-router.get("/",verifyUser, getAll);
 router.get("/myAttacks",verifyUser, getyourAttacks);
 router.get("/myThrets",verifyUser, getyourThrets);
+router.get("/",verifyUser, getAll);
 
 export default router

@@ -3,7 +3,7 @@ import JWT, { JsonWebTokenError } from "jsonwebtoken";
 
 export default (req:Request, res:Response, next:NextFunction)=>{
     try {
-        const token = req.body.token
+        const token = req.headers["authorization"];
         if(!token) {res.status(400).json({err:"token must be provided"}); return}
         const payload = JWT.verify(token, process.env.SECRET_JWT!);
         if (!payload) {throw new Error('you are Hacker 😱')}

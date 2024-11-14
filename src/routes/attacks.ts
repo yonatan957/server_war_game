@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { getAllService, getyourThretsServise } from "../services/attack"
+import { getAllService, getyourAttacksService, getyourThretsServise } from "../services/attack"
 import { tokenPayload } from "../DTO/tokenPayload"
 
 export const getAll = async(req: Request, res: Response)=>{
@@ -15,7 +15,7 @@ export const getyourAttacks = async(req: Request, res: Response)=>{
     try {
         const id = (req as any).user.user_id
         if (!id) throw new Error('problem with middleware')
-        const attacks = await getAllService()
+        const attacks = await getyourAttacksService(id)
         res.json(attacks)
     } catch (error) {
         res.status(400).json({message:(error as Error).message})
