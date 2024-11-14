@@ -6,14 +6,15 @@ import { tokenPayload } from "../DTO/tokenPayload";
 import { createAttack, explodeAttack, interceptAttack } from "../services/attack";
 
 export const handleSocketConnection = (client:Socket)=>{
-    client.on('launch', async(data:{attack:IAttack, token:string})=>{
+    client.on('launch', async(data:{attack:IAttack, token:string, location:string})=>{
         try {
+            if (!["IDF - Center", "IDF - West Bank", "IDF - South", "IDF - North"].includes(data.location.trim())) {throw new Error('you are Hacker 😱')}
             const user:tokenPayload = verifyAttack(data.token)
             if (user.user_id != data.attack.id_attacker) {throw new Error('you are Hacker 😱2')}
             const {newAttack, oranization} = await createAttack(data.attack)
             if (!newAttack) {throw new Error('attack not created')}
             client.emit('launched', newAttack)
-            sendAttack(oranization as "Houthis", newAttack)
+            io.to(data.location).emit('launched', newAttack);
         } catch (error) {
             console.log((error as Error).message)
         }
@@ -39,19 +40,3 @@ const verifyAttack = (token:string)=>{
     if(!payload){throw new Error('you are Hacker 😱1')}
     return payload
 }
-const sendAttack = (oranization: "Houthis" , attack:IAttack) => {
-    const index = {
-        Hezbollah: ["IDF - North"],
-        Hamas: ["IDF - South"],
-        IRGC: ["IDF - Center", "IDF - West Bank", "IDF - South", "IDF - North"],
-        Houthis: ["IDF - Center", "IDF - West Bank", "IDF - South", "IDF - North"]
-    };
-
-    if (!index[oranization]) {
-       throw new Error(`Organization ${oranization} not found`);
-    }
-
-    index[oranization].forEach(room => {
-        io.to(room).emit('launched', attack);
-    });
-};

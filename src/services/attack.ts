@@ -43,7 +43,7 @@ export const explodeAttack = async (attack:string, user_id:string) => {
     const attackToUpdate = await Attack.findById(attack)
     if(!attackToUpdate) throw new Error('attack not found')
     if(attackToUpdate.id_attacker !== user_id) throw new Error('you are not the attacker');
-    attackToUpdate.intercepted = false
+    if(attackToUpdate.intercepted) return attackToUpdate
     attackToUpdate.id_intercepted = undefined
     attackToUpdate.tymeToHit = 0
     await attackToUpdate.save()
