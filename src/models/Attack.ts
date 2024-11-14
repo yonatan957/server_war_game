@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IAttack {
+    organization: string;
     name: string;
     tymeToHit: number;
     id_attacker: string;
@@ -13,7 +14,8 @@ const attackSchema = new Schema<IAttack>({
     tymeToHit: Number,
     id_attacker: String,
     id_intercepted: String,
-    intercepted: Boolean
+    intercepted: Boolean,
+    organization: String
 });
 
 export default mongoose.model<IAttack>("Attack", attackSchema)

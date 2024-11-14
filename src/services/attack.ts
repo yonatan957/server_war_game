@@ -15,6 +15,7 @@ export const createAttack = async (attack:IAttack) => {
     await user.save()
     attack.tymeToHit = missles.find(missle => missle.name === attack.name)!.speed
     attack.intercepted = false
+    attack.organization = user.organization
     const newAttack = await Attack.create(attack)
     return {newAttack, oranization:user.organization}
 }
@@ -51,6 +52,32 @@ export const explodeAttack = async (attack:string, user_id:string) => {
 
 export const getAllService = async () => {
     const attacks = await Attack.find({}).lean()
+    if(!attacks) throw new Error('attacks not found')
+    return attacks
+}
+
+export const getyourAttacksService = async (id:string) => {
+    const attacks = await Attack.find({id_attacker:id}).lean()
+    if(!attacks) throw new Error('attacks not found')
+    return attacks
+}
+
+export const getyourThretsServise = async (id:string) => {
+    const user = await User.findById(id).lean()
+    if(!user) throw new Error('user not found')
+    let attacks:IAttack[] = [] 
+    if (user.organization === 'IDF - North'){
+        attacks = await Attack.find({organization:'Hezbollah'}).lean()
+    }
+    else if (user.organization === 'IDF - South'){
+        attacks = await Attack.find({organization:'Hamas'}).lean()
+    }
+    else if (['IDF - Center', 'IDF - West Bank'].includes(user.organization)){
+        attacks = await Attack.find({}).lean()
+    }
+    else{
+        throw new Error('organization not found')
+    }
     if(!attacks) throw new Error('attacks not found')
     return attacks
 }
