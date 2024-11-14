@@ -11,7 +11,7 @@ export const handleSocketConnection = (client:Socket)=>{
             if (!["IDF - Center", "IDF - West Bank", "IDF - South", "IDF - North"].includes(data.location.trim())) {throw new Error('you are Hacker 😱')}
             const user:tokenPayload = verifyAttack(data.token)
             if (user.user_id != data.attack.id_attacker) {throw new Error('you are Hacker 😱2')}
-            const {newAttack, oranization} = await createAttack(data.attack)
+            const newAttack = await createAttack(data.attack)
             if (!newAttack) {throw new Error('attack not created')}
             client.emit('launched', newAttack)
             io.to(data.location).emit('launched', newAttack);
@@ -22,10 +22,15 @@ export const handleSocketConnection = (client:Socket)=>{
     client.on('goToRoom', (data:{room:string})=>{
         client.join(data.room.trim())
     })
+    
+    //listen to the intercept gets type of missle that intercept , token of user, and time to left to hit
     client.on("intercept", async(data:{interceptor:string, token:string, attack: string,time: number})=>{
         const user:tokenPayload = verifyAttack(data.token)
-        const attack = await interceptAttack(data.interceptor, data.attack, user.user_id, data.time)
-        io.emit('intercepted', attack)
+        const {attackToUpdate, timeToItercept} = await interceptAttack(data.interceptor, data.attack, user.user_id, data.time)
+        if(!timeToItercept)throw new Error("didn't find time")
+        setTimeout(() => {   
+            io.emit('intercepted', attackToUpdate)         
+        }, timeToItercept * 1000);
     })
     client.on("Attack_finished", (data:{attack:string, token:string})=>{
         const user:tokenPayload = verifyAttack(data.token)

@@ -17,7 +17,7 @@ export const createAttack = async (attack:IAttack) => {
     attack.intercepted = false
     attack.organization = user.organization
     const newAttack = await Attack.create(attack)
-    return {newAttack, oranization:user.organization}
+    return newAttack
 }
 export const interceptAttack = async (interceptor:string, attack:string, user_id:string, time:number) => {
     const user = await User.findById(user_id)
@@ -36,7 +36,7 @@ export const interceptAttack = async (interceptor:string, attack:string, user_id
         return resource
     })
     await user.save()
-    return attackToUpdate
+    return {attackToUpdate, timeToItercept:missles.find(m=> m.name == interceptor)?.speed}
 }
 
 export const explodeAttack = async (attack:string, user_id:string) => {
