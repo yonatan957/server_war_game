@@ -42,7 +42,7 @@ export const registerService = async (registerDTO: registerDTO) => {
 };
 
 export const buyWeaponService = async (id: string, interceptor: string) => {
-  const user = await User.findById(id).lean();
+  const user = await User.findById(id)
   if (!user) throw new Error("user not found");
   const weapon = user.resources.find(
     (resource) => resource.name === interceptor

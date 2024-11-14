@@ -32,14 +32,11 @@ export const register = async (
   }
 };
 
-export const buyWeapon = async (
-  req: Request<any, any, buyWeaponDTO>,
-  res: Response
-) => {
+export const buyWeapon = async (req: Request<any, any, buyWeaponDTO>,res: Response) => {
   try {
     const id = (req as any).user.user_id;
     if (!id) throw new Error("problem with middleware");
-    const interceptor = req.body.interceptor;
+    const interceptor = req.body.missle;
     if (!interceptor) throw new Error("interceptor required");
     const result = await buyWeaponService(id, interceptor);
     res.status(201).json({ message: "success" });

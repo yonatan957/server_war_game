@@ -1,3 +1,3 @@
 export interface buyWeaponDTO {
-  interceptor: string;
+  missle: string;
 }
