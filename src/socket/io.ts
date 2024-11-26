@@ -28,9 +28,10 @@ export const handleSocketConnection = (client:Socket)=>{
         const user:tokenPayload = verifyAttack(data.token)
         const {attackToUpdate, timeToItercept} = await interceptAttack(data.interceptor, data.attack, user.user_id, data.time)
         if(!timeToItercept)throw new Error("didn't find time")
-        setTimeout(() => {   
-            io.emit('intercepted', attackToUpdate)         
-        }, timeToItercept * 1000);
+        // setTimeout(() => {   
+        //     io.emit('intercepted', attackToUpdate)         
+        // }, timeToItercept * 1000);
+        io.emit('intercepted', attackToUpdate)         
     })
     client.on("Attack_finished", (data:{attack:string, token:string})=>{
         const user:tokenPayload = verifyAttack(data.token)
